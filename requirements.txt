@@ -1,0 +1,15 @@
+# FastAPI and server dependencies
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic>=2.0.0
+
+# Machine learning dependencies
+torch>=2.6.0
+torchvision>=0.21.0
+transformers>=5.0.0
+pillow>=10.0.0
+huggingface-hub>=1.0.0
+
+# Additional utilities
+python-dotenv>=1.0.0
+httpx>=0.25.0
