@@ -1,5 +1,5 @@
-# Multi-stage build for smaller image
-FROM python:3.11-slim as builder
+# Single-stage build for App Platform compatibility
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -8,18 +8,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install CPU-only PyTorch first (much smaller than GPU version)
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
-
-# Production image
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# Copy installed packages from builder
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY model_loader.py .
